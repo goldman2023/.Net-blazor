@@ -1,0 +1,193 @@
+﻿@page "/handling-events"
+
+<h1 class="title-one page-title">Handling Flexmonster events</h1>
+
+<div class="description-blocks first-description-block">
+    <p>
+        Perform an action (for example, click on a grid cell) to trigger a <a class="title-link" target="blank"
+                                                                              href="https://www.flexmonster.com/api/events/?r=rm_blz">Flexmonster event</a>
+        . Scroll down to the log output to see which events get triggered.
+    </p>
+</div>
+
+<ToggleButton ComponentTriggerFunction="@EventsSignerController"
+              LabelChecked="Events are tracked"
+              LabelUnchecked="Events are not tracked"
+              Id="eventsID" />
+
+<FlexmonsterComponent @ref="flexmonster"
+                      Report="@report"
+                      Toolbar=true
+                      Width="100%"
+                      Height=600>
+</FlexmonsterComponent>
+
+<div class="section">
+    <LogsList Title="Log Output" @ref="logsList" Logs="@logs" />
+    <button class="button-red" @onclick="ClearLogs">Clear Log Output</button>
+</div>
+@code {
+    private FlexmonsterComponent flexmonster;
+    private LogsList logsList;
+    private List<Log> logs;
+    string report = "https://cdn.flexmonster.com/github/demo-report.json";
+
+    protected override void OnInitialized()
+    {
+        logs = new List<Log>();
+        base.OnInitialized();
+    }
+
+    public void ClearLogs()
+    {
+        logs.Clear();
+    }
+
+    public void EventsSignerController(bool isSigned)
+    {
+        if (isSigned)
+        {
+            SignOnAllEvents();
+        }
+        else
+        {
+            SignOffAllEvents();
+        }
+    }
+
+    async Task AfterChartDraw() { await Task.Run(() => { PrintLog("afterchartdraw"); }); }
+    async Task AfterGridDraw(GridDrawParams param) { await Task.Run(() => { PrintLog("aftergriddraw"); }); }
+    async Task BeforeGridDraw(GridDrawParams param) { await Task.Run(() => { PrintLog("beforegriddraw"); }); }
+    async Task BeforeToolbarCreated(object param) { await Task.Run(() => { PrintLog("beforetoolbarcreated"); }); }
+    async Task CellClick(CellData param) { await Task.Run(() => { PrintLog("cellclick"); }); }
+    async Task CellDoubleClick(CellData param) { await Task.Run(() => { PrintLog("celldoubleclick"); }); }
+    async Task ChartClick(ChartData param) { await Task.Run(() => { PrintLog("chartclick"); }); }
+    async Task DataChanged(DataChangedParams param) { await Task.Run(() => { PrintLog("datachanged"); }); }
+    async Task DataError(DataErrorParams param) { await Task.Run(() => { PrintLog("dataerror"); }); }
+    async Task DataFileCancelled() { await Task.Run(() => { PrintLog("datafilecancelled"); }); }
+    async Task DataLoaded() { await Task.Run(() => { PrintLog("dataloaded"); }); }
+    async Task DrillthroughClose() { await Task.Run(() => { PrintLog("drillthroughclose"); }); }
+    async Task DrillthroughOpen(object param) { await Task.Run(() => { PrintLog("drillthroughopen"); }); }
+    async Task ExportComplete() { await Task.Run(() => { PrintLog("exportcomplete"); }); }
+    async Task ExportStart() { await Task.Run(() => { PrintLog("exportstart"); }); }
+    async Task FieldsListClose() { await Task.Run(() => { PrintLog("fieldslistclose"); }); }
+    async Task FieldsListOpen() { await Task.Run(() => { PrintLog("fieldslistopen"); }); }
+    async Task FilterClose() { await Task.Run(() => { PrintLog("filterclose"); }); }
+    async Task FilterOpen(FilterOpenParams param) { await Task.Run(() => { PrintLog("filteropen"); }); }
+    async Task LoadingData() { await Task.Run(() => { PrintLog("loadingdata"); }); }
+    async Task LoadingLocalization() { await Task.Run(() => { PrintLog("loadinglocalization"); }); }
+    async Task LoadingOLAPStructure() { await Task.Run(() => { PrintLog("loadingolapstructure"); }); }
+    async Task LoadingReportFile() { await Task.Run(() => { PrintLog("loadingreportfile"); }); }
+    async Task LocalizationError() { await Task.Run(() => { PrintLog("localizationerror"); }); }
+    async Task LocalizationLoaded() { await Task.Run(() => { PrintLog("localizationloaded"); }); }
+    async Task OLAPStructureError() { await Task.Run(() => { PrintLog("olapstructureerror"); }); }
+    async Task OLAPStructureLoaded() { await Task.Run(() => { PrintLog("olapstructureloaded"); }); }
+    async Task OpeningReportFile() { await Task.Run(() => { PrintLog("openingreportfile"); }); }
+    async Task PrintComplete() { await Task.Run(() => { PrintLog("printcomplete"); }); }
+    async Task PrintStart() { await Task.Run(() => { PrintLog("printstart"); }); }
+    async Task QueryComplete() { await Task.Run(() => { PrintLog("querycomplete"); }); }
+    async Task QueryError() { await Task.Run(() => { PrintLog("queryerror"); }); }
+    async Task Ready() { await Task.Run(() => { PrintLog("ready"); }); }
+    async Task ReportChange() { await Task.Run(() => { PrintLog("reportchange"); }); }
+    async Task ReportComplete() { await Task.Run(() => { PrintLog("reportcomplete"); }); }
+    async Task ReportFileCancelled() { await Task.Run(() => { PrintLog("reportfilecancelled"); }); }
+    async Task ReportFileError() { await Task.Run(() => { PrintLog("reportfileerror"); }); }
+    async Task RunningQuery() { await Task.Run(() => { PrintLog("runningquery"); }); }
+    async Task Update() { await Task.Run(() => { PrintLog("update"); }); }
+
+
+
+    public void SignOffAllEvents()
+    {
+        flexmonster.OnAfterChartDrawEvent -= AfterChartDraw;
+        flexmonster.OnAfterGridDrawEvent -= AfterGridDraw;
+        flexmonster.OnBeforeGridDrawEvent -= BeforeGridDraw;
+        flexmonster.OnBeforeToolbarCreatedEvent -= BeforeToolbarCreated;
+        flexmonster.OnCellClickEvent -= CellClick;
+        flexmonster.OnCellDoubleClickEvent -= CellDoubleClick;
+        flexmonster.OnChartClickEvent -= ChartClick;
+        flexmonster.OnDataChangedEvent -= DataChanged;
+        flexmonster.OnDataErrorEvent -= DataError;
+        flexmonster.OnDataFileCancelledEvent -= DataFileCancelled;
+        flexmonster.OnDataLoadedEvent -= DataLoaded;
+        flexmonster.OnDrillthroughCloseEvent -= DrillthroughClose;
+        flexmonster.OnDrillthroughOpenEvent -= DrillthroughOpen;
+        flexmonster.OnExportCompleteEvent -= ExportComplete;
+        flexmonster.OnExportStartEvent -= ExportStart;
+        flexmonster.OnFieldsListCloseEvent -= FieldsListClose;
+        flexmonster.OnFieldsListOpenEvent -= FieldsListOpen;
+        flexmonster.OnFilterCloseEvent -= FilterClose;
+        flexmonster.OnFilterOpenEvent -= FilterOpen;
+        flexmonster.OnLoadingDataEvent -= LoadingData;
+        flexmonster.OnLoadingLocalizationEvent -= LoadingLocalization;
+        flexmonster.OnLoadingOLAPStructureEvent -= LoadingOLAPStructure;
+        flexmonster.OnLoadingReportFileEvent -= LoadingReportFile;
+        flexmonster.OnLocalizationErrorEvent -= LocalizationError;
+        flexmonster.OnLocalizationLoadedEvent -= LocalizationLoaded;
+        flexmonster.OnOLAPStructureErrorEvent -= OLAPStructureError;
+        flexmonster.OnOLAPStructureLoadedEvent -= OLAPStructureLoaded;
+        flexmonster.OnOpeningReportFileEvent -= OpeningReportFile;
+        flexmonster.OnPrintCompleteEvent -= PrintComplete;
+        flexmonster.OnPrintStartEvent -= PrintStart;
+        flexmonster.OnQueryCompleteEvent -= QueryComplete;
+        flexmonster.OnQueryErrorEvent -= QueryError;
+        flexmonster.OnReadyEvent -= Ready;
+        flexmonster.OnReportChangeEvent -= ReportChange;
+        flexmonster.OnReportCompleteEvent -= ReportComplete;
+        flexmonster.OnReportFileCancelledEvent -= ReportFileCancelled;
+        flexmonster.OnReportFileErrorEvent -= ReportFileError;
+        flexmonster.OnRunningQueryEvent -= RunningQuery;
+        flexmonster.OnUpdateEvent -= Update;
+    }
+
+
+
+    public void PrintLog(string eventName)
+    {
+        logs.Add(new Log() { Date = DateTime.Now, Event = eventName });
+        StateHasChanged();
+    }
+
+    public void SignOnAllEvents()
+    {
+        flexmonster.OnAfterChartDrawEvent += AfterChartDraw;
+        flexmonster.OnAfterGridDrawEvent += AfterGridDraw;
+        flexmonster.OnBeforeGridDrawEvent += BeforeGridDraw;
+        flexmonster.OnBeforeToolbarCreatedEvent += BeforeToolbarCreated;
+        flexmonster.OnCellClickEvent += CellClick;
+        flexmonster.OnCellDoubleClickEvent += CellDoubleClick;
+        flexmonster.OnChartClickEvent += ChartClick;
+        flexmonster.OnDataChangedEvent += DataChanged;
+        flexmonster.OnDataErrorEvent += DataError;
+        flexmonster.OnDataFileCancelledEvent += DataFileCancelled;
+        flexmonster.OnDataLoadedEvent += DataLoaded;
+        flexmonster.OnDrillthroughCloseEvent += DrillthroughClose;
+        flexmonster.OnDrillthroughOpenEvent += DrillthroughOpen;
+        flexmonster.OnExportCompleteEvent += ExportComplete;
+        flexmonster.OnExportStartEvent += ExportStart;
+        flexmonster.OnFieldsListCloseEvent += FieldsListClose;
+        flexmonster.OnFieldsListOpenEvent += FieldsListOpen;
+        flexmonster.OnFilterCloseEvent += FilterClose;
+        flexmonster.OnFilterOpenEvent += FilterOpen;
+        flexmonster.OnLoadingDataEvent += LoadingData;
+        flexmonster.OnLoadingLocalizationEvent += LoadingLocalization;
+        flexmonster.OnLoadingOLAPStructureEvent += LoadingOLAPStructure;
+        flexmonster.OnLoadingReportFileEvent += LoadingReportFile;
+        flexmonster.OnLocalizationErrorEvent += LocalizationError;
+        flexmonster.OnLocalizationLoadedEvent += LocalizationLoaded;
+        flexmonster.OnOLAPStructureErrorEvent += OLAPStructureError;
+        flexmonster.OnOLAPStructureLoadedEvent += OLAPStructureLoaded;
+        flexmonster.OnOpeningReportFileEvent += OpeningReportFile;
+        flexmonster.OnPrintCompleteEvent += PrintComplete;
+        flexmonster.OnPrintStartEvent += PrintStart;
+        flexmonster.OnQueryCompleteEvent += QueryComplete;
+        flexmonster.OnQueryErrorEvent += QueryError;
+        flexmonster.OnReadyEvent += Ready;
+        flexmonster.OnReportChangeEvent += ReportChange;
+        flexmonster.OnReportCompleteEvent += ReportComplete;
+        flexmonster.OnReportFileCancelledEvent += ReportFileCancelled;
+        flexmonster.OnReportFileErrorEvent += ReportFileError;
+        flexmonster.OnRunningQueryEvent += RunningQuery;
+        flexmonster.OnUpdateEvent += Update;
+    }
+}

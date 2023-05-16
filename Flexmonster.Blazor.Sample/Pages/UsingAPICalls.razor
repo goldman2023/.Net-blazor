@@ -1,0 +1,61 @@
+﻿@page "/using-api-calls"
+
+<h1 class="page-title">Using Flexmonster API calls</h1>
+
+<div class="description-blocks first-description-block">
+    <p>
+        Flexmonster provides
+        <a href="https://www.flexmonster.com/api/methods/?r=rm_blz"
+           target="_blank"
+           class="title-link">API calls</a>
+        for interacting with the component. As an example, we've added the
+        toggle buttons below. Use them to switch between the views or make
+        Flexmonster read-only.
+    </p>
+</div>
+
+<div class="description-blocks">
+    <ToggleSwitch ComponentTriggerFunction="@ControllGridCharts" LabelChecked="Column chart" LabelUnchecked="Grid" />
+    <ToggleSwitch ComponentTriggerFunction="@ControllInteractiveness" LabelChecked="Read-only" LabelUnchecked="Interactive" />
+</div>
+
+<FlexmonsterComponent @ref="flexmonster"
+                      Report="@report"
+                      Toolbar=true
+                      Width="100%"
+                      Height=600>
+</FlexmonsterComponent>
+
+@code {
+    private FlexmonsterComponent flexmonster;
+    string report = "https://cdn.flexmonster.com/github/demo-report.json";
+
+    private async Task ControllInteractiveness(bool isReadonly)
+    {
+        if (isReadonly)
+        {
+            await flexmonster.SetOptions(new Options() { ReadOnly = true });
+            await flexmonster.Refresh();
+        }
+        else
+        {
+            await flexmonster.SetOptions(new Options() { ReadOnly = false });
+            await flexmonster.Refresh();
+        }
+
+    }
+
+    private async Task ControllGridCharts(bool isGrid)
+    {
+        if (!isGrid)
+        {
+           await  flexmonster.ShowGrid();
+        }
+        else
+        {
+            await flexmonster.ShowCharts();
+        }
+    }
+
+
+}
